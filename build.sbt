@@ -2,7 +2,6 @@ import Dependencies._
 import Settings._
 import sbt.Keys._
 import com.ntoggle.pierre.{Dependencies => PD}
-import sbt.inConfig
 
 lazy val commonDependencies = (
   PD.withScope(Test)(PD.specsBundle :+ PD.specs2("specs2-mock"))

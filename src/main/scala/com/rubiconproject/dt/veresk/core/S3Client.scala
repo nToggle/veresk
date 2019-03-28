@@ -6,10 +6,13 @@ import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 
 object S3Client {
-  def buildAmazonClient() = {
+  def buildAmazonClient(awsAccessKey: String,
+                        awsSecretKey: String,
+                        awsProxyHost: String,
+                        awsProxyPort: Int) = {
     val awsClientOpts = new ClientConfiguration()
-    awsClientOpts.setProxyHost("riak-dev.lab1.fanops.net")
-    awsClientOpts.setProxyPort(8080)
+    awsClientOpts.setProxyHost(awsProxyHost)
+    awsClientOpts.setProxyPort(awsProxyPort)
     awsClientOpts.setConnectionTimeout(2000)
     awsClientOpts.setMaxConnections(3)
     awsClientOpts.setMaxErrorRetry(3)
@@ -17,8 +20,8 @@ object S3Client {
     awsClientOpts.setSignerOverride("S3SignerType")
     val credentialsProvider = new AWSStaticCredentialsProvider(
       new BasicAWSCredentials(
-        "6UVBIDHA5F-PJGFVU-DT",
-        "tPtVyaYk-V8QyDP0KhTPgEemFPFJoePRUGh78w=="
+        awsAccessKey,
+        awsSecretKey
       )
     )
     val configuration = new EndpointConfiguration(
