@@ -63,6 +63,9 @@ jobs:
       - run:
           name: Test
           command: cat /dev/null | sbt test exit
-      - run:
-          name: Run Assembly
-          command: cat /dev/null | sbt '; set every test in assembly := {}; assembly' exit
+
+workflows:
+  version: 2
+  build-workflow:
+    jobs:
+      - build
