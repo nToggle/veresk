@@ -4,14 +4,13 @@ import java.io.File
 
 import pureconfig.error.ConfigReaderFailures
 
-case class WriterConfiguration(
-  periodBetweenRuns: Long,
-  awsAccessKey: String,
-  awsSecretKey: String,
-  awsProxyHost: String,
-  awsProxyPort: Int)
+case class WriterConfiguration(periodBetweenRuns: Long,
+                               awsAccessKey: String,
+                               awsSecretKey: String,
+                               awsProxyHost: String,
+                               awsProxyPort: Int)
 
-object WriterConfiguration{
-  def parse(
-             path: File): Either[ConfigReaderFailures, WriterConfiguration] = pureconfig.loadConfig[WriterConfiguration](path.toPath)
+object WriterConfiguration {
+  def parse(path: File): Either[ConfigReaderFailures, WriterConfiguration] =
+    pureconfig.loadConfig[WriterConfiguration](path.toPath)
 }

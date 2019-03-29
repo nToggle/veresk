@@ -1,0 +1,63 @@
+version: 2
+jobs:
+  build:
+    parallelism: 1
+    shell: /bin/bash --login
+
+    machine:
+      enabled: true
+      image: circleci/classic:edge
+    environment:
+      SBT_OPTS: -Xms3G -Xmx3G -Xss2M -XX:MaxPermSize=512M
+    steps:
+      - checkout
+      - restore_cache:
+          name: "Restoring build tool caches (sbt, maven, etc)"
+          keys:
+            - v2-build-{{ .Branch }}- # This branch if available
+            - v2-build-master-        # Default branch if not
+            - v2-build-               # Any branch if there are none on the default branch
+      - run:
+          name: "Make sure build tools are installed"
+          command: sudo apt-get install -y openjdk-8-jdk bc curl sbt
+      - restore_cache:
+          name: "Restoring build caches (target directories, etc)"
+          keys:
+            - v2-sbt-{{ .Branch }}- # This branch if available
+            - v2-sbt-master-        # Default branch if not
+      # sbt appears to sometimes hang here if we don't add exit at the end
+      #   via https://hub.docker.com/r/codestar/circleci-scala-sbt-git/
+      # or perhaps using the cat > /dev/null will help
+      #   via https://discuss.circleci.com/t/too-long-with-no-output-while-building-docker-image/12275/12
+      #
+      # if the sbt stages are still timing out using both of the above, make
+      # sure that the sbt_opts are allocating enough memory to the task
+
+      - run:
+          name: Compile
+          command: cat /dev/null | sbt compile test:compile exit
+      - save_cache:
+          name: "Saving build tool caches (sbt, maven, etc)"
+          key: v2-build-{{ .Branch }}-{{ epoch }}
+          when: always
+          paths:
+            - ~/.ivy2/cache
+            - ~/.sbt
+            - ~/.m2
+      - save_cache:
+          name: "Saving build caches (target directories, etc)"
+          key: v2-sbt-{{ .Branch }}-{{ epoch }}
+          when: on_success
+          paths:
+            - target
+            - project/target/
+            - ota-common/target
+            - ota-encoder/target
+            - ota-joiner/target
+            - ota-tester/target
+      - run:
+          name: Test
+          command: cat /dev/null | sbt test exit
+      - run:
+          name: Run Assembly
+          command: cat /dev/null | sbt '; set every test in assembly := {}; assembly' exit
