@@ -32,7 +32,12 @@ jobs:
       #
       # if the sbt stages are still timing out using both of the above, make
       # sure that the sbt_opts are allocating enough memory to the task
-
+      - run:
+          name: Check source formatting
+          command: >
+            cat /dev/null | sbt
+            scalafmtSbtCheck scalafmtCheck test:scalafmtCheck it:scalafmtCheck
+            exit
       - run:
           name: Compile
           command: cat /dev/null | sbt compile test:compile exit
