@@ -1,0 +1,3 @@
+alias quickAssembly=; set every test in assembly := {}; assembly
+alias compileAll=; compile; test:compile; it:compile
+alias formatAll=; scalafmtSbt; scalafmt; test:scalafmt; it:scalafmt

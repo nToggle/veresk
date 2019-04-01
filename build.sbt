@@ -3,18 +3,19 @@ import Settings._
 import sbt.Keys._
 import com.ntoggle.pierre.{Dependencies => PD}
 
-lazy val commonDependencies = (
-  PD.withScope(Test)(PD.specsBundle :+ PD.specs2("specs2-mock"))
-    ++ PD.configBundle
-    ++ PD.loggingBundle
-    :+ PD.scopt
-  )
+lazy val commonDependencies =
+  PD.withScope(Test)(PD.specsBundle :+ PD.specs2("specs2-mock")) ++
+    PD.configBundle ++
+    PD.loggingBundle :+
+    PD.scopt
 
-lazy val root = (project in file("."))
+val root = (project in file("."))
   .settings(name := "veresk")
   .settings(commonSettings: _*)
   .configs(IntegrationTest extend Test)
+  .settings(
+    inConfig(Compile)(compile := (compile dependsOn scalafmtSbt).value)
+  )
   .settings(libraryDependencies
     ++= commonDependencies
-    ++ AwsClient.bundle
-  )
+      ++ AwsClient.bundle)

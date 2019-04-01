@@ -10,18 +10,9 @@ object Settings {
     scalacOptions in Test ++= Seq("-Yrangepos")
   )
 
-  val formatSettings: Seq[Def.Setting[_]] =
-    inConfig(IntegrationTest)(
-      scalafmtConfigSettings
-    ) ++ Seq(Compile, Test, IntegrationTest).flatMap {
-      inConfig(_)(
-        scalafmtOnCompile := true
-      )
-    } ++ Seq(Test, IntegrationTest).flatMap {
-      inConfig(_)(
-        test := (scalafmtCheck dependsOn test).value
-      )
-    }
+  val scalafmtSettings: Seq[Def.Setting[_]] = Seq(Compile, Test) flatMap {
+    inConfig(_)(scalafmtOnCompile := true)
+  }
 
   val compilerSettings: Seq[Def.Setting[_]] = Seq(
     // helps debuging pureconfig derivation errors
@@ -31,7 +22,7 @@ object Settings {
   val commonSettings: scala.Seq[Def.Setting[_]] = (
     DefaultSettings.dtSettings()
       ++ testSettings
-      ++ formatSettings
+      ++ scalafmtSettings
       ++ compilerSettings
-    )
+  )
 }

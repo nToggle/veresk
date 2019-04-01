@@ -1,4 +1,3 @@
-
 object Dependencies {
 
   import sbt._
