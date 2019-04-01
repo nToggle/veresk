@@ -13,6 +13,7 @@ val root = (project in file("."))
   .settings(name := "veresk")
   .settings(commonSettings: _*)
   .configs(IntegrationTest extend Test)
+  .settings(SparkPlugin.assemblySettings: _*)
   .settings(
     inConfig(Compile)(compile := (compile dependsOn scalafmtSbt).value)
   )

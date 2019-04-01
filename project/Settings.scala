@@ -4,7 +4,6 @@ import sbt._
 object Settings {
   import com.ntoggle.pierre.DefaultSettings
   import org.scalafmt.sbt.ScalafmtPlugin.autoImport._
-  import org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings
 
   val testSettings: Seq[Def.Setting[_]] = Seq(
     scalacOptions in Test ++= Seq("-Yrangepos")
