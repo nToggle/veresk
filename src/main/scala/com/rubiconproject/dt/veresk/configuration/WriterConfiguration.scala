@@ -5,6 +5,7 @@ import java.io.File
 import pureconfig.error.ConfigReaderFailures
 
 case class WriterConfiguration(periodBetweenRuns: Long,
+                               sampleRecommendationFile: String,
                                awsAccessKey: String,
                                awsSecretKey: String,
                                awsProxyHost: String,
