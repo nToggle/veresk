@@ -24,13 +24,13 @@ object MainWriter extends StrictLogging {
       }
     })
 
-    val config = WriterStartUpConfiguration
+    val (config, sampleRec) = WriterStartUpConfiguration
       .parse(args)
       .fold(sys.error("Unable to parse cli arguments")) { c =>
         WriterConfiguration.parse(c.appConfig) match {
           case Left(e) =>
             sys.error(s"Unable to parse application configuration: $e")
-          case Right(pc) => pc
+          case Right(pc) => (pc, c.sampleRec)
         }
       }
 
@@ -38,7 +38,7 @@ object MainWriter extends StrictLogging {
                                             config.awsSecretKey,
                                             config.awsProxyHost,
                                             config.awsProxyPort)
-    val fileToUpload = new File("src/main/resources/cartridge.csvy")
+    val fileToUpload = new File(sampleRec.getName)
     val scheduler = Executors.newSingleThreadScheduledExecutor()
     scheduler.scheduleAtFixedRate(
       new Runnable {
